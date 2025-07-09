@@ -166,6 +166,8 @@ int MainMenu(int menu)
 {
 	currentMenu = menu;
 
+	InitNetworkThread();
+
 	InitGUIThreads();
 
 	InitProgressThread();
@@ -186,6 +188,8 @@ int MainMenu(int menu)
 	bgImg = new GuiImage(background);
 	mainWindow->Append(bgImg);
 
+	MountGamePartition();
+
 	ResumeGui();
 
 	bgMusic = new GuiBGM(Resources::GetFile("bg_music.ogg"), Resources::GetFileSize("bg_music.ogg"), Settings.volume);
@@ -193,9 +197,7 @@ int MainMenu(int menu)
 	bgMusic->Load(Settings.ogg_path);
 	bgMusic->Play();
 
-	MountGamePartition();
-
-	InitNetworkThread(); // Starting this a little later fixes a random crash
+	WDVD_StopMotor();
 
 	if (Settings.autonetwork)
 		ResumeNetworkThread();
