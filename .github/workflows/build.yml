@@ -1,0 +1,35 @@
+name: Build binaries
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set SHA env variable
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build docker image
+        run: docker build -t usbloadergx-build .
+
+      - name: Create container
+        run: docker create --name usbloadergx-build usbloadergx-build
+
+      - name: Copy out files
+        run: |
+          docker cp usbloadergx-build:/projectroot/boot.dol .
+          docker cp usbloadergx-build:/projectroot/boot.elf .
+      
+      - name: Remove container
+        run: docker rm usbloadergx-build
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with: 
+          name: usbloadergx_${{ env.sha }}
+          path: |
+            boot.dol
+            boot.elf
