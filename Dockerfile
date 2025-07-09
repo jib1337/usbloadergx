@@ -5,18 +5,16 @@
 # docker cp usbloadergx-build:/projectroot/boot.elf .
 # docker rm usbloadergx-temp
 
-# Build a Debian base container
-FROM debian:buster as usbloader
+FROM debian:buster AS usbloader
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 RUN apt-get update -y && apt-get install -y \ 
     xz-utils make git
 
-ADD https://wii.leseratte10.de/devkitPro/file.php/devkitPPC-r41-2-linux_x86_64.pkg.tar.xz /
-ADD https://wii.leseratte10.de/devkitPro/file.php/libogc-2.3.1-1-any.pkg.tar.xz /
-ADD https://wii.leseratte10.de/devkitPro/file.php/devkitppc-rules-1.1.1-1-any.pkg.tar.xz /
-ADD https://wii.leseratte10.de/devkitPro/file.php/general-tools-1.2.0-2-linux_x86_64.pkg.tar.xz /
-ADD https://wii.leseratte10.de/devkitPro/file.php/gamecube-tools-1.0.3-1-linux_x86_64.pkg.tar.xz /
-
+COPY Libraries/devkitPPC-r41-2-linux_x86_64.pkg.tar.xz /
+COPY Libraries/libogc-2.3.1-1-any.pkg.tar.xz /
+COPY Libraries/devkitppc-rules-1.1.1-1-any.pkg.tar.xz /
+COPY Libraries/general-tools-1.2.0-2-linux_x86_64.pkg.tar.xz /
+COPY Libraries/gamecube-tools-1.0.3-1-linux_x86_64.pkg.tar.xz /
 
 RUN tar -xf /devkitPPC-r41-2-linux_x86_64.pkg.tar.xz opt/devkitpro/devkitPPC --strip-components=1 && \
     tar -xf /libogc-2.3.1-1-any.pkg.tar.xz opt/devkitpro/libogc --strip-components=1 && \
@@ -28,8 +26,5 @@ RUN tar -xf /devkitPPC-r41-2-linux_x86_64.pkg.tar.xz opt/devkitpro/devkitPPC --s
 ENV DEVKITPRO=/devkitpro
 ENV DEVKITPPC=/devkitpro/devkitPPC
 
-
-# Now we have a container that has the dev environment set up. 
-# Copy current folder into container, then compile
 COPY . /projectroot/
 RUN cd /projectroot && make
