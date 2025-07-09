@@ -1,8 +1,9 @@
 # Build: 
-# DOCKER_BUILDKIT=1 docker build -o output .
-# for Windows, use 
-# { "features": { "buildkit": true } }
-# instead of the environment variable
+# docker build -t usbloadergx-build .
+# docker create --name usbloadergx-build usbloadergx-build
+# docker cp usbloadergx-build:/projectroot/boot.dol .
+# docker cp usbloadergx-build:/projectroot/boot.elf .
+# docker rm usbloadergx-temp
 
 # Build a Debian base container
 FROM debian:buster as usbloader
@@ -32,8 +33,3 @@ ENV DEVKITPPC=/devkitpro/devkitPPC
 # Copy current folder into container, then compile
 COPY . /projectroot/
 RUN cd /projectroot && make
-
-
-# Copy the DOL and ELF out of the container
-FROM scratch AS export-stage
-COPY --from=usbloader /projectroot/boot.* /
