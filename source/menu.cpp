@@ -26,6 +26,7 @@
 #include "usbloader/disc.h"
 #include "usbloader/GameList.h"
 #include "usbloader/MountGamePartition.h"
+#include "usbloader/wdvd.h"
 #include "mload/mload_modules.h"
 #include "audio.h"
 #include "gecko.h"
