@@ -8,6 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          lfs: true
+
+      - name: Checkout LFS
+        run: git lfs checkout
 
       - name: Set SHA env variable
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
